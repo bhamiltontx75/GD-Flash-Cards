@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f7f3eb">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="FlipSet">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <title>FlipSet</title>
+    <link rel="manifest" href="manifest.webmanifest">
+    <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell" aria-live="polite">
+      <section id="screen-home" class="screen active" data-screen="home">
+        <header class="top-bar">
+          <div>
+            <p class="eyebrow">FlipSet</p>
+            <h1>Card Sets</h1>
+          </div>
+          <button class="icon-button" id="add-set-button" type="button" aria-label="Create card set">
+            <span aria-hidden="true">+</span>
+          </button>
+        </header>
+
+        <div class="action-strip">
+          <button class="primary-button" id="home-quiz-button" type="button">
+            <span aria-hidden="true">▶</span>
+            Start Quiz
+          </button>
+        </div>
+
+        <div class="utility-strip">
+          <button class="secondary-button compact" id="export-data-button" type="button">Export Decks</button>
+          <button class="secondary-button compact" id="import-data-button" type="button">Import Decks</button>
+          <input id="import-data-input" class="file-input" type="file" accept="application/json">
+        </div>
+
+        <div id="set-list" class="set-list"></div>
+      </section>
+
+      <section id="screen-set" class="screen" data-screen="set">
+        <header class="top-bar detail-bar">
+          <button class="icon-button ghost" id="back-home-button" type="button" aria-label="Back to card sets">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <div class="title-stack">
+            <p class="eyebrow" id="set-count-label">0 cards</p>
+            <h1 id="set-title-heading">Set</h1>
+          </div>
+          <button class="icon-button" id="edit-set-button" type="button" aria-label="Edit card set">
+            <span aria-hidden="true">✎</span>
+          </button>
+        </header>
+
+        <div class="action-strip two">
+          <button class="secondary-button" id="set-quiz-button" type="button">
+            <span aria-hidden="true">▶</span>
+            Quiz
+          </button>
+          <button class="primary-button" id="add-card-button" type="button">
+            <span aria-hidden="true">+</span>
+            Add Card
+          </button>
+        </div>
+
+        <p id="set-description" class="description"></p>
+        <div id="card-list" class="card-list"></div>
+      </section>
+
+      <section id="screen-setup" class="screen" data-screen="setup">
+        <header class="top-bar detail-bar">
+          <button class="icon-button ghost" id="back-from-setup-button" type="button" aria-label="Back">
+            <span aria-hidden="true">‹</span>
+          </button>
+          <div class="title-stack">
+            <p class="eyebrow">Quiz</p>
+            <h1>Choose Sets</h1>
+          </div>
+          <span class="top-spacer" aria-hidden="true"></span>
+        </header>
+
+        <div id="setup-set-list" class="set-list selectable"></div>
+
+        <div class="quiz-options">
+          <label class="toggle-row" for="shuffle-toggle">
+            <span>
+              <strong>Randomize</strong>
+              <small id="selected-card-count">0 cards selected</small>
+            </span>
+            <input id="shuffle-toggle" type="checkbox" checked>
+          </label>
+          <button class="primary-button full" id="begin-quiz-button" type="button">Begin</button>
+        </div>
+      </section>
+
+      <section id="screen-quiz" class="screen quiz-screen" data-screen="quiz">
+        <header class="quiz-header">
+          <button class="icon-button ghost" id="exit-quiz-button" type="button" aria-label="Exit quiz">
+            <span aria-hidden="true">×</span>
+          </button>
+          <div class="progress-wrap" aria-label="Quiz progress">
+            <span id="quiz-progress-label">Card 1 of 1</span>
+            <div class="progress-track"><div id="quiz-progress-bar"></div></div>
+          </div>
+          <span class="score-pill" id="score-pill">0 ✓</span>
+        </header>
+
+        <button class="flashcard" id="flashcard-button" type="button" aria-label="Flip card">
+          <span class="set-chip" id="active-set-chip">Set</span>
+          <span class="flashcard-text" id="flashcard-text">Question</span>
+        </button>
+
+        <div class="answer-actions" id="answer-actions">
+          <button class="mark-button missed" id="mark-missed-button" type="button">Missed</button>
+          <button class="mark-button correct" id="mark-correct-button" type="button">Correct</button>
+        </div>
+      </section>
+
+      <section id="screen-results" class="screen" data-screen="results">
+        <header class="top-bar">
+          <div>
+            <p class="eyebrow">Complete</p>
+            <h1>Results</h1>
+          </div>
+        </header>
+
+        <div class="result-panel">
+          <div class="result-score" id="result-score">0%</div>
+          <div class="result-stats">
+            <span><strong id="result-correct">0</strong> correct</span>
+            <span><strong id="result-missed">0</strong> missed</span>
+            <span><strong id="result-total">0</strong> total</span>
+          </div>
+        </div>
+
+        <div id="missed-list" class="missed-list"></div>
+
+        <div class="action-strip stack">
+          <button class="secondary-button full" id="retry-missed-button" type="button">Retry Missed</button>
+          <button class="primary-button full" id="new-quiz-button" type="button">New Quiz</button>
+          <button class="text-button" id="done-button" type="button">Done</button>
+        </div>
+      </section>
+    </main>
+
+    <dialog id="set-dialog" class="modal">
+      <form method="dialog" id="set-form">
+        <header class="modal-header">
+          <h2 id="set-dialog-title">New Set</h2>
+          <button class="icon-button ghost" value="cancel" type="submit" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </header>
+        <label>
+          Title
+          <input id="set-title-input" type="text" autocomplete="off" required maxlength="48">
+        </label>
+        <label>
+          Description
+          <textarea id="set-description-input" rows="3" maxlength="160"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button class="danger-button" id="delete-set-button" type="button">Delete</button>
+          <button class="primary-button" type="submit">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog id="card-dialog" class="modal">
+      <form method="dialog" id="card-form">
+        <header class="modal-header">
+          <h2 id="card-dialog-title">New Card</h2>
+          <button class="icon-button ghost" value="cancel" type="submit" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </header>
+        <label>
+          Front
+          <textarea id="card-front-input" rows="4" required maxlength="320"></textarea>
+        </label>
+        <label>
+          Back
+          <textarea id="card-back-input" rows="4" required maxlength="420"></textarea>
+        </label>
+        <div class="modal-actions">
+          <button class="danger-button" id="delete-card-button" type="button">Delete</button>
+          <button class="primary-button" type="submit">Save</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script src="app.js"></script>
+    <script>
+      if ("serviceWorker" in navigator) {
+        window.addEventListener("load", () => {
+          navigator.serviceWorker.register("sw.js");
+        });
+      }
+    </script>
+  </body>
+</html>
